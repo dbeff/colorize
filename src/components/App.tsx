@@ -1,15 +1,27 @@
 import Logo from "./Logo";
-import ColorCard from "./ColorCard";
+import ColorEditor from "./ColorEditor";
+import NavItem from "./NavItem";
+
+import { QueueListIcon, PencilIcon } from "@heroicons/react/24/outline";
 
 function App() {
   return (
-    <div className="md:container md:mx-auto px-4 antialiase">
-      <header className="App-header text-3xl font-bold py-10">
-        <Logo />
-      </header>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        <ColorCard color="#D66577" />
+    <div className="flex flex-col h-screen w-screen overflow-hidden">
+      <div className="flex flex-1 w-full">
+        <nav className="static w-60 border-r border-slate-200 z-10">
+          <Logo />
+          <NavItem icon={<QueueListIcon />} title={"Palettes"} />
+          <NavItem icon={<PencilIcon />} title={"Editor"} />
+        </nav>
+        <main className="flex-1 overflow-auto">
+          <div className="p-8 ">
+            <ColorEditor color="#D66577" />
+          </div>
+        </main>
       </div>
+      <footer className="p-4 bg-slate-50 border-t">
+        <div>Footer</div>
+      </footer>
     </div>
   );
 }

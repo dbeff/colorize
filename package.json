@@ -4,6 +4,8 @@
   "private": true,
   "homepage": "https://dbeff.github.io/colorize/",
   "dependencies": {
+    "@heroicons/react": "^2.0.13",
+    "@radix-ui/react-slider": "^1.1.0",
     "@reduxjs/toolkit": "^1.9.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",

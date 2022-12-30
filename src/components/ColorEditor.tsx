@@ -2,8 +2,9 @@
 
 import chroma from "chroma-js";
 import { useState } from "react";
-import { HuePicker, AlphaPicker, BlockPicker } from "react-color";
-import { HexColorInput, HexColorPicker } from "react-colorful";
+import { TwitterPicker } from "react-color";
+import { HexColorInput } from "react-colorful";
+import { RgbaColorPicker } from "react-colorful";
 import Color from "../common/Color";
 import CardField from "./CardField";
 
@@ -17,7 +18,7 @@ export default function ColorCard({ color = "white" }: Props) {
   const [colorState, setColorState] = useState(chroma(color));
   const [showColorPicker, setShowColorPicker] = useState(false);
 
-  const luminance = chroma(colorState).hsl()[2];
+  const luminance = chroma(colorState).luminance();
   const luminanceString = chroma(colorState).hsl()[2].toFixed(2);
 
   const alpha = chroma(colorState).rgba()[3].toString();
@@ -28,90 +29,80 @@ export default function ColorCard({ color = "white" }: Props) {
     setShowColorPicker(true);
   };
 
-  const onChangeColor = (color: string) => {
+  const onChangeHex = (color: string) => {
     setColorState(chroma(color));
   };
 
+  const onChangeRGB = (color: {
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+  }) => {
+    setColorState(chroma.rgb(color.r, color.g, color.b).alpha(color.a));
+  };
+
   const onChangeLuminance = (value: number[]) => {
-    console.log(value);
-    const c = chroma(colorState);
-    const h = c.hsl()[0];
-    const s = c.hsl()[1];
-    const l = value[0];
-
-    console.log(h, s, l);
-    const n = chroma.hsl(h, s, l);
-
-    setColorState(n);
+    const c = chroma(colorState).luminance(value[0], "hsl");
+    setColorState(c);
   };
 
   return (
     <div className="rounded-xl p-4 bg-white text-sm">
-      <div className="flex items-center rounded-xl">
-        <div className="flex-1"></div>
-      </div>
-      <div
-        className="rounded-xl h-40 m-4 box-border relative"
-        style={{ backgroundColor: hex }}
-        onClick={onClickColor}
-      >
-        {showColorPicker && (
-          <div className="absolute top-full left-1/2 shadow-sm transform -translate-x-1/2 -translate-y-1/2">
-            <BlockPicker
-              className="shadow-sm border-gray-900"
-              color={colorState.hex()}
-              onChange={(color) => {
-                setColorState(chroma(color.hex));
-              }}
-              onChangeComplete={() => {
-                setShowColorPicker(false);
-              }}
-            />
-          </div>
-        )}
+      <div className="flex rounded-xl items-stretch">
+        <div className="flex-1 relative">
+          <div
+            className="rounded-xl h-full mx-4 box-border relative"
+            style={{ backgroundColor: hex }}
+            onClick={onClickColor}
+          ></div>
+          {showColorPicker && (
+            <div className="absolute top-full left-1/2 shadow-sm transform -translate-x-1/2 -translate-y-1/2">
+              <TwitterPicker
+                className="shadow-sm border-gray-900"
+                color={colorState.hex()}
+                onChange={(color) => {
+                  setColorState(chroma(color.hex));
+                }}
+                onChangeComplete={() => {
+                  setShowColorPicker(false);
+                }}
+              />
+            </div>
+          )}
+        </div>
+        <div>
+          <RgbaColorPicker
+            color={{
+              r: chroma(hex).rgb()[0],
+              g: chroma(hex).rgb()[1],
+              b: chroma(hex).rgb()[2],
+              a: chroma(hex).alpha(),
+            }}
+            onChange={onChangeRGB}
+          />
+        </div>
       </div>
 
       <div className="p-2">
         <div className="text-slate-700"></div>
 
-        <CardField name={"hex"} value={hex} />
+        <CardField
+          name={"hex"}
+          value={
+            <HexColorInput
+              color={hex}
+              prefixed
+              className="px-2"
+              onChange={onChangeHex}
+            />
+          }
+        />
         <CardField name={"hsl"} value={Color.getHsl(colorState)} />
         <CardField name={"rgba"} value={Color.getRgba(colorState)} />
         <CardField name={"luminance"} value={luminanceString} />
         <CardField name={"alpha"} value={alpha} />
         <CardField name={"temperature"} value={temperature} />
-
-        <CardField
-          value={
-            <HuePicker
-              className="my-2"
-              width="100%"
-              color={colorState.hex()}
-              onChange={(color) => {
-                if (color?.hex) setColorState(chroma(color?.hex));
-              }}
-            />
-          }
-        />
-
-        <CardField
-          value={
-            <AlphaPicker
-              className="my-2"
-              width="100%"
-              color={colorState.hex()}
-              onChange={(color) => {
-                if (!color?.hsl?.a) return;
-                const a = color?.hsl.a;
-                const hex = color?.hex;
-
-                const c = chroma(hex).alpha(a);
-                console.log(c);
-                setColorState(c);
-              }}
-            />
-          }
-        />
 
         <CardField
           value={

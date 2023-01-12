@@ -14,7 +14,7 @@ export interface Props {
   color: string | number | chroma.Color;
 }
 
-export default function ColorCard({ color = "white" }: Props) {
+export default function ColorEditor({ color = "white" }: Props) {
   const [colorState, setColorState] = useState(chroma(color));
   const [showColorPicker, setShowColorPicker] = useState(false);
 

@@ -19,6 +19,14 @@ namespace Color {
     const a = hsl[3].toFixed(2);
     return `${r},${g},${b},${a}`;
   };
+
+  export const setLuminance = (color: ValueType, luminance: number) => {
+    return chroma(color).luminance(luminance, "hsl");
+  };
+
+  export const isValid = (color: ValueType) => {
+    return chroma.valid(color);
+  };
 }
 
 export default Color;

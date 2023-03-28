@@ -43,7 +43,14 @@ export default function ColorEditor({ color = "white" }: Props) {
   };
 
   const onChangeLuminance = (value: number[]) => {
-    const c = chroma(colorState).luminance(value[0], "hsl");
+    const h = colorState.hsl()[0];
+    const s = colorState.hsl()[1];
+    const l = value[0];
+
+    const c = chroma.hsl(h, s, l);
+    // const isValid = Color.isValid(c.css("hsl"));
+    // const h = colorState.hsl()[0];
+    console.log(c.hsl().toString(), h, value[0]);
     setColorState(c);
   };
 
@@ -111,7 +118,7 @@ export default function ColorEditor({ color = "white" }: Props) {
               defaultValue={[luminance]}
               max={1}
               min={0}
-              step={0.01}
+              step={0.001}
               aria-label="Luminance"
               value={[luminance]}
               onValueChange={onChangeLuminance}
